@@ -2,16 +2,20 @@
   "name": "travelcompany",
   "version": "1.0.0",
   "description": "",
-  "entry point": "index.js",
-  "main": "index.js",
+  "entry point": "./bin/www.js",
+  "main": "./bin/www.js",
   "scripts": {
-    "start": "node ./server.js",
-    "develop": "nodemon ./server.js"
+    "start": "node ./src/bin/www.js",
+    "develop": "nodemon ./src/bin/www.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "nodemon": "^2.0.7"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
   }
 }
