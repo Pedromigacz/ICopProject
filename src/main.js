@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const helmet = require('helmet')
+const middleware = require('./middlewares/middlewares.js')
 
-app.use(helmet())
+app.use(middleware.helmet)
 
 app.get("*", (req, res) => res.send("Welcome to the error page"));
 
