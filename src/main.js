@@ -8,6 +8,24 @@ mongoose.connect(`mongodb+srv://${mongoData.name}:${mongoData.password}${mongoDa
 const db = mongoose.connection;
 
 // Middlewares
+// JSON header virifier
+app.use((req, res, next) => {
+    if(req.accepts("json")) return next()
+    res.status(400).send({errorMessage: 'pelse, include the right JSON header on your request!'})
+})
+
+// Json req verifier and parser
+app.use(express.json({
+    verify: (req, res, buf, encoding) => {
+      try {
+        JSON.parse(buf)
+      } catch(e) {
+        res.status(400).send({errorMessage: 'Input data must be on JSON format!'})
+      }
+    }
+}))
+
+// Helmet Middleware
 const {
     helmet
 } = require('./middlewares')
