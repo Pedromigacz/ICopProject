@@ -31,6 +31,7 @@ app.use(
   express.json({
     verify: (req, res, buf, encoding) => {
       try {
+        if (req.method === "GET") return;
         JSON.parse(buf);
       } catch (e) {
         res
@@ -46,6 +47,7 @@ app.use(helmet());
 
 // Routes
 app.use("/api/auth", require("./routes/user.js"));
+app.use("/api/services", require("./routes/services.js"));
 
 // 404 Error handler
 app.get("*", (req, res, next) => {
