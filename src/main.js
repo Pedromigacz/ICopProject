@@ -7,7 +7,12 @@ const express = require("express"),
 // Connect to db
 mongoose.connect(
   `mongodb+srv://${mongoData.name}:${mongoData.password}${mongoData.path}`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: true,
+  }
 );
 const db = mongoose.connection;
 
