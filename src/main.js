@@ -2,7 +2,8 @@ const express = require("express"),
   app = express(),
   mongoose = require("mongoose"),
   mongoData = require("./utils/databaseCredentials.js"),
-  helmet = require("helmet");
+  helmet = require("helmet"),
+  errorHandler = require("./middlewares/error.js");
 
 // Connect to db
 mongoose.connect(
@@ -50,6 +51,9 @@ app.use("/api/auth", require("./routes/user.js"));
 app.get("*", (req, res, next) => {
   res.sendStatus(404);
 });
+
+// General Error Handler
+app.use(errorHandler);
 
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
