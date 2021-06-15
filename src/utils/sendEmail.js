@@ -1,5 +1,6 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const nodemailer = require("nodemailer");
+const ErrorResponse = require("./errorResponse.js");
 
 const sendEmail = (options) => {
   const transporter = nodemailer.createTransport({
@@ -19,9 +20,7 @@ const sendEmail = (options) => {
 
   transporter.sendMail(mailOptions, function (err, info) {
     if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
+      return new ErrorResponse("Somthing went wrong in our server, sorry", 500);
     }
   });
 };
