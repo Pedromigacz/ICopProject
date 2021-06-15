@@ -90,8 +90,6 @@ exports.forgotPassword = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
-  res.send("forgotPassword Route");
 };
 
 exports.resetPassword = async (req, res, next) => {
