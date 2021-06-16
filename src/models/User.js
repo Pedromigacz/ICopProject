@@ -5,9 +5,9 @@ const jwt = require("jsonwebtoken");
 const { jwtSecret, jwtExpire } = require("../utils/jwt.js");
 
 const UserSchema = new mongoose.Schema({
-  username: {
+  stripeId: {
     type: String,
-    required: [true, "Please provide a username"],
+    required: [true, "Please provide a strapiId"],
   },
   email: {
     type: String,

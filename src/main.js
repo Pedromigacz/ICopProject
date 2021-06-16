@@ -29,7 +29,20 @@ app.use("/api/webhooks", require("./webhooks/auth.js"));
 app.use(jsonHeaderVerifier);
 
 // Json req verifier and parser
-app.use(jsonBodyVerifierAndParser);
+app.use(
+  express.json({
+    verify: (req, res, buf, encoding) => {
+      try {
+        if (req.method === "GET") return;
+        JSON.parse(buf);
+      } catch (e) {
+        res
+          .status(400)
+          .send({ errorMessage: "Input data must be on JSON format!" });
+      }
+    },
+  })
+);
 
 // Helmet Middleware
 app.use(helmet());

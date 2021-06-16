@@ -4,7 +4,7 @@ const ErrorResponse = require("../utils/errorResponse.js");
 const { frontEndUrl } = require("../utils/dns.js");
 const sendEmail = require("../utils/sendEmail.js");
 
-exports.register = async (req, res, next) => {
+exports.completeRegistration = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   try {
@@ -20,7 +20,9 @@ exports.register = async (req, res, next) => {
   }
 };
 
+// NORMAL USER ROUTES
 exports.login = async (req, res, next) => {
+  console.log("flag");
   const { email, password } = req.body;
 
   if (!email || !password) {

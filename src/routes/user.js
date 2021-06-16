@@ -2,13 +2,13 @@ const express = require("express"),
   router = express.Router();
 
 const {
-  register,
+  completeRegistration,
   login,
   forgotPassword,
   resetPassword,
 } = require("../controllers/user.js");
 
-router.route("/register").post(register);
+router.route("/completeRegistration").post(completeRegistration);
 
 router.route("/login").post(login);
 
