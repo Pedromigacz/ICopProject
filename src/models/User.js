@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
   listOfTravels: [
     {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "Travels",
+      ref: "Travel",
     },
   ],
   role: {
