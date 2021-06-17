@@ -5,14 +5,10 @@ const jwt = require("jsonwebtoken");
 const { jwtSecret, jwtExpire } = require("../utils/jwt.js");
 
 const UserSchema = new mongoose.Schema({
-  stripeId: {
-    type: String,
-    required: [true, "Please provide a strapiId"],
-  },
   email: {
     type: String,
     required: [true, "Please provide an email"],
-    unique: true,
+    unique: [true, "There should be only one user per email"],
     match: [
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       "Please provide and valid email",
@@ -24,6 +20,30 @@ const UserSchema = new mongoose.Schema({
     minLength: 6,
     select: false,
   },
+  stripeId: {
+    type: String,
+    required: [true, "Please provide a strapiId"],
+    unique: [true, "There should be only one user per stipeId"],
+  },
+  activated: {
+    type: Boolean,
+    default: false,
+  },
+  paidUtil: {
+    type: Date,
+    required: [true, "Plese provide paidUntil date"],
+  },
+  listOfTravels: [
+    {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Travels",
+    },
+  ],
+  role: {
+    type: String,
+    default: "user",
+  },
+  name: String,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
