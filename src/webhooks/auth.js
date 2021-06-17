@@ -10,6 +10,7 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail.js");
 const { frontEndUrl } = require("../utils/dns.js");
 
+// subscription created event
 router
   .route("/preRegistration")
   .post(
@@ -44,7 +45,7 @@ router
             email: customer.email,
             password: priorPassword,
             stripeId: event.data.object.customer,
-            paidUtil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has some extra days
+            paidUtil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has at least one extra day
           });
         } catch (error) {
           // In case the user is already created
@@ -70,6 +71,38 @@ router
       res
         .status(200)
         .json({ success: true, data: "user created successfully" });
+    }
+  );
+
+// subscription renewal event
+router
+  .route("/subscription")
+  .post(
+    express.raw({ type: "*/*" }),
+    verifyStrapiSignature,
+    async (req, res, next) => {
+      const event = req.body;
+
+      if (event.type !== "invoice.payment_succeeded") {
+        return next(new ErrorResponse("Webhook denied", 400));
+      }
+
+      try {
+        await User.findOneAndUpdate(
+          {
+            stripeId: event.data.object.customer,
+          },
+          {
+            paidUtil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has at least one extra day
+          }
+        );
+      } catch (error) {
+        return next(error);
+      }
+
+      res
+        .status(200)
+        .json({ success: true, data: "subscription updated successfully" });
     }
   );
 
