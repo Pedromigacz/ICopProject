@@ -2,11 +2,11 @@
   "name": "travelcompany",
   "version": "1.0.0",
   "description": "",
-  "entry point": "./bin/www.js",
-  "main": "./bin/www.js",
+  "entry point": "./src/bin/www.js",
+  "main": "./src/bin/www.js",
   "scripts": {
     "start": "node ./src/bin/www.js",
-    "develop": "nodemon ./src/bin/www.js"
+    "develop": "nodemon -L ./src/bin/www.js"
   },
   "author": "",
   "license": "ISC",
