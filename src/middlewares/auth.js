@@ -14,7 +14,7 @@ exports.verifyAndFindUser = async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new ErrorResponse("Not authorized to access this route", 401));
+    return next(new ErrorResponse("access denied", 403));
   }
 
   try {
@@ -30,6 +30,20 @@ exports.verifyAndFindUser = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return next(new ErrorResponse("Not authorized to access this route", 401));
+    return next(new ErrorResponse("access denied", 403));
   }
+};
+
+exports.verifyAdminPrivilige = async (req, res, next) => {
+  if (req.user.role === "admin" || req.user.role === "superadmin") {
+    return next();
+  }
+  next(new ErrorResponse(403, "access denied"));
+};
+
+exports.verifySuperAdminPrivilige = async (req, res, next) => {
+  if (req.user.role === "superadmin") {
+    return next();
+  }
+  next(new ErrorResponse(403, "access denied"));
 };
