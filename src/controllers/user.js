@@ -5,16 +5,22 @@ const { frontEndUrl } = require("../utils/dns.js");
 const sendEmail = require("../utils/sendEmail.js");
 
 exports.completeRegistration = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  // req validation
+  if (!req.body.name) {
+    return next(ErrorResponse("missing name", 400));
+  }
+
+  if (!req.body.password) {
+    return next(ErrorResponse("missing new password", 400));
+  }
 
   try {
-    const user = await User.create({
-      username,
-      email,
-      password,
+    const user = await User.findByIdAndUpdate(req.user._id, {
+      name: req.body.name,
+      password: req.body.password,
     });
 
-    sendToken(user, 201, res);
+    res.status(200).json({ success: true, data: "IHUUUU" });
   } catch (error) {
     next(error);
   }
@@ -22,7 +28,6 @@ exports.completeRegistration = async (req, res, next) => {
 
 // NORMAL USER ROUTES
 exports.login = async (req, res, next) => {
-  console.log("flag");
   const { email, password } = req.body;
 
   if (!email || !password) {

@@ -1,5 +1,6 @@
 const express = require("express"),
-  router = express.Router();
+  router = express.Router(),
+  { verifyAndFindUser } = require("../middlewares/auth.js");
 
 const {
   completeRegistration,
@@ -8,7 +9,9 @@ const {
   resetPassword,
 } = require("../controllers/user.js");
 
-router.route("/completeRegistration").post(completeRegistration);
+router
+  .route("/completeRegistration")
+  .post(verifyAndFindUser, completeRegistration);
 
 router.route("/login").post(login);
 

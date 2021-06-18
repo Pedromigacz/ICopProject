@@ -3,7 +3,7 @@ const User = require("../models/User.js");
 const ErrorResponse = require("../utils/errorResponse.js");
 const { jwtSecret } = require("../utils/jwt.js");
 
-exports.protect = async (req, res, next) => {
+exports.verifyAndFindUser = async (req, res, next) => {
   let token;
 
   if (
