@@ -49,7 +49,8 @@ app.use(helmet());
 
 // Routes
 app.use("/api/auth", require("./routes/user.js"));
-app.use("/api/services", require("./routes/services.js"));
+app.use("/api/travels", require("./routes/travel.js"));
+app.use("/api/services", require("./routes/service.js"));
 
 // 404 Error handler
 app.get("*", (req, res, next) => {
