@@ -3,8 +3,9 @@ const Travel = require("../models/Travel.js");
 const mongoose = require("mongoose");
 
 exports.getTravel = async (req, res, next) => {
+  let travel;
   try {
-    const travel = await Travel.findById(travelId);
+    travel = await Travel.findById(req.params.travelId);
   } catch (error) {
     return next(error);
   }
@@ -44,9 +45,18 @@ exports.putTravel = (req, res, next) => {
   });
 };
 
-exports.deleteTravel = (req, res, next) => {
+exports.deleteTravel = async (req, res, next) => {
+  try {
+    const travel = await Travel.findById(req.params.travelId);
+
+    if (!travel) return next(new ErrorResponse("travel not found", 404));
+
+    await travel.remove();
+  } catch (error) {
+    return next(error);
+  }
   res.status(200).json({
     success: true,
-    data: "You got access to some private data",
+    data: "travel deleter successfully",
   });
 };
