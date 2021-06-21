@@ -23,13 +23,17 @@ exports.postTravel = async (req, res, next) => {
 
   const travel = req.body.travel;
 
+  try {
   const savedTravel = await Travel.create({
     name: travel.name,
     location: travel.location,
     date: travel.date,
     comments: travel.comments,
-    owner: mongoose.Types.ObjectId(req.user._id),
+      owner: mongoose.Types.ObjectId(travel.ownerId),
   });
+  } catch (error) {
+    return next(error);
+  }
 
   res.status(200).json({
     success: true,

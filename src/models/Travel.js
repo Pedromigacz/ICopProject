@@ -27,6 +27,9 @@ const TravelSchema = new mongoose.Schema({
 TravelSchema.pre("save", async function (next) {
   try {
     const owner = await User.findById(this.owner);
+    if (!owner) {
+      next(new ErrorResponse("Owner not found", 404));
+    }
     owner.listOfTravels.push(this._id);
 
     owner.save();
