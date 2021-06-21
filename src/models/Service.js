@@ -19,6 +19,6 @@ const ServiceSchema = new mongoose.Schema({
   },
 });
 
-const Service = mongoose.model("Travel", ServiceSchema);
+const Service = mongoose.model("Service", ServiceSchema);
 
 module.exports = Service;
