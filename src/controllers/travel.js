@@ -80,6 +80,10 @@ exports.putTravel = async (req, res, next) => {
 };
 
 exports.deleteTravel = async (req, res, next) => {
+  if (!req.params.travelId) {
+    return next(new ErrorResponse("missing travel", 400));
+  }
+
   try {
     const travel = await Travel.findById(req.params.travelId);
 
@@ -91,6 +95,6 @@ exports.deleteTravel = async (req, res, next) => {
   }
   res.status(200).json({
     success: true,
-    data: "travel deleter successfully",
+    data: "travel deleted successfully",
   });
 };
