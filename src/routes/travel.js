@@ -11,9 +11,12 @@ const {
 const {
   verifyAdminPrivilige,
   verifyAndFindUser,
+  verifyOwnershipOrAdminPrivilege,
 } = require("../middlewares/auth.js");
 
-router.route("/:travelId").get(verifyAndFindUser, getTravel);
+router
+  .route("/:travelId")
+  .get(verifyAndFindUser, verifyOwnershipOrAdminPrivilege, getTravel);
 
 router.route("/").post(verifyAndFindUser, verifyAdminPrivilige, postTravel);
 

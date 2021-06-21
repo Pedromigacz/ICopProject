@@ -23,8 +23,10 @@ exports.postTravel = async (req, res, next) => {
 
   const travel = req.body.travel;
 
+  let savedTravel;
+
   try {
-    const savedTravel = await Travel.create({
+    savedTravel = await Travel.create({
       name: travel.name,
       location: travel.location,
       date: travel.date,
