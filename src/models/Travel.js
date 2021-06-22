@@ -26,7 +26,7 @@ const TravelSchema = new mongoose.Schema({
 // TRAVEL PRE HOOKS
 TravelSchema.pre("save", async function (next) {
   try {
-    const owner = await User.findById(this.owner);
+    const owner = await mongoose.model("User").findById(this.owner);
     if (!owner) {
       next(new ErrorResponse("Owner not found", 404));
     }
@@ -41,17 +41,24 @@ TravelSchema.pre("save", async function (next) {
 
 TravelSchema.pre("remove", async function (next) {
   try {
-    const owner = await User.findByIdAndUpdate(this.owner._id, {
-      $pull: { listOfTravels: this._id },
-    });
-    if (!owner)
+    // remove this travel Id from owner retrieved document
+    const owner = await mongoose
+      .model("User")
+      .findByIdAndUpdate(this.owner._id, {
+        $pull: { listOfTravels: this._id },
+      });
+    if (!owner) {
       return next(
         new ErrorResponse(
           "internal server erro, please, contact us and we'll solve this issue as soon as possible",
           500
         )
       );
-    // remove this travel Id from owner retrieved document
+    }
+    // delete all services referenced in listOfServices
+    this.listOfServices.map(async (service) => {
+      await mongoose.model("Service").findByIdAndDelete(service._id);
+    });
   } catch (error) {
     return next(error);
   }
