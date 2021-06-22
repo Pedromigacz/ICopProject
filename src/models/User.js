@@ -70,6 +70,18 @@ UserSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
+UserSchema.pre("remove", async function (next) {
+  try {
+    await this.listOfTravels.map(async (travel) => {
+      const travelDoc = await mongoose.model("Travel").findById(travel._id);
+      await travelDoc.remove();
+    });
+  } catch (error) {
+    return next(error);
+  }
+  next();
+});
+
 // USER MOTHODS
 UserSchema.methods.matchPasswords = async function (password) {
   return await bcrypt.compare(password, this.password);

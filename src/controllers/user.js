@@ -130,6 +130,28 @@ exports.resetPassword = async (req, res, next) => {
   }
 };
 
+exports.removeUser = async (req, res, next) => {
+  if (!req.params.userId) {
+    return next(new ErrorResponse("missing userId", 400));
+  }
+
+  try {
+    const user = await User.findById(req.params.userId);
+
+    if (!user) {
+      return next(new ErrorResponse("user not found", 404));
+    }
+
+    await user.remove();
+  } catch (error) {
+    return next(error);
+  }
+  res.status(200).json({
+    success: true,
+    data: "user deleted successfully",
+  });
+};
+
 const sendToken = (user, statusCode, res) => {
   const token = user.getSignedToken();
   res.status(statusCode).json({

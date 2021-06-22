@@ -7,6 +7,7 @@ const {
   login,
   forgotPassword,
   resetPassword,
+  removeUser,
 } = require("../controllers/user.js");
 
 router
@@ -18,5 +19,7 @@ router.route("/login").post(login);
 router.route("/forgotPassword").post(forgotPassword);
 
 router.route("/resetPassword/:resetToken").post(resetPassword);
+
+router.route("/user/:userId").delete(removeUser);
 
 module.exports = router;

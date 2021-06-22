@@ -30,9 +30,17 @@ TravelSchema.pre("save", async function (next) {
     if (!owner) {
       next(new ErrorResponse("Owner not found", 404));
     }
-    owner.listOfTravels.push(this._id);
 
-    owner.save();
+    if (
+      owner.listOfTravels.some(
+        (travel) => travel._id.toString() === this._id.toString()
+      )
+    ) {
+      return owner.save();
+    } else {
+      owner.listOfTravels.push(this._id);
+      return owner.save();
+    }
   } catch (error) {
     return next(error);
   }
@@ -47,14 +55,7 @@ TravelSchema.pre("remove", async function (next) {
       .findByIdAndUpdate(this.owner._id, {
         $pull: { listOfTravels: this._id },
       });
-    if (!owner) {
-      return next(
-        new ErrorResponse(
-          "internal server erro, please, contact us and we'll solve this issue as soon as possible",
-          500
-        )
-      );
-    }
+
     // delete all services referenced in listOfServices
     this.listOfServices.map(async (service) => {
       await mongoose.model("Service").findByIdAndDelete(service._id);
