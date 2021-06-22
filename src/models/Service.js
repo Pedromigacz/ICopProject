@@ -19,6 +19,21 @@ const ServiceSchema = new mongoose.Schema({
   },
 });
 
+// SERVICE PRE HOOKS
+ServiceSchema.pre("save", async function (next) {
+  try {
+    const travelOwner = await mongoose.model("Travel").findById(this.owner);
+    if (!travelOwner) {
+      next(new ErrorResponse("Travel not found", 404));
+    }
+    travelOwner.listOfServices.push(this._id);
+
+    travelOwner.save();
+  } catch (error) {
+    return next(error);
+  }
+  next();
+});
 const Service = mongoose.model("Service", ServiceSchema);
 
 module.exports = Service;
