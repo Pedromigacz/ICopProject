@@ -26,6 +26,14 @@ exports.verifyAndFindUser = async (req, res, next) => {
       return next(new ErrorResponse("No user found with this id", 404));
     }
 
+    if (
+      user.paidUtil < Date.now() &&
+      user.role !== "admin" &&
+      user.role !== "superadmin"
+    ) {
+      return next(new ErrorResponse("access denied", 403));
+    }
+
     req.user = user;
 
     next();
