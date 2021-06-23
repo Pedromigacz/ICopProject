@@ -47,9 +47,33 @@ exports.postService = async (req, res, next) => {
 };
 
 exports.putScervice = async (req, res, next) => {
+  if (!req.params.serviceId) {
+    return next(new ErrorResponse("missing params", 400));
+  }
+
+  if (!req.body.service) {
+    return next(new ErrorResponse("missing params", 400));
+  }
+
+  let service;
+  try {
+    service = await Service.findByIdAndUpdate(req.params.serviceId, {
+      name: req.body.service.name,
+      price: req.body.service.price,
+      brand: req.body.service.brand,
+      date: req.body.service.date,
+      address: req.body.service.address,
+      description: req.body.service.description,
+      comments: req.body.service.comments,
+    });
+  } catch (error) {
+    return next(error);
+  }
+
   res.status(200).json({
     success: true,
-    data: "You got access to some private data",
+    data: "service updated successfully",
+    serviceId: service._id,
   });
 };
 

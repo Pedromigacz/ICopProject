@@ -31,7 +31,7 @@ exports.verifyAndFindUser = async (req, res, next) => {
       user.role !== "admin" &&
       user.role !== "superadmin"
     ) {
-      return next(new ErrorResponse("access denied", 403));
+      return next(new ErrorResponse("please, complete your registration", 403));
     }
 
     req.user = user;

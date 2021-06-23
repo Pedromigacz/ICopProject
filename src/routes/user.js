@@ -20,6 +20,6 @@ router.route("/forgotPassword").post(forgotPassword);
 
 router.route("/resetPassword/:resetToken").post(resetPassword);
 
-router.route("/user/:userId").delete(removeUser);
+router.route("/user/:userId").delete(verifyAndFindUser, removeUser);
 
 module.exports = router;
