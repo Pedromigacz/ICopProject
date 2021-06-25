@@ -4,6 +4,9 @@ const ErrorResponse = require("../utils/errorResponse.js");
 const { frontEndUrl } = require("../utils/dns.js");
 const sendEmail = require("../utils/sendEmail.js");
 
+const { stripeSecretKey } = require("../utils/stripe.js");
+const stripe = require("stripe")(stripeSecretKey);
+
 exports.completeRegistration = async (req, res, next) => {
   // req validation
   if (!req.body.name) {
@@ -158,4 +161,38 @@ const sendToken = (user, statusCode, res) => {
     success: true,
     token,
   });
+};
+
+exports.createSubscription = async (req, res, next) => {
+  if (!req.body.email) {
+    return next(new ErrorResponse("Missing email parameter", 400));
+  }
+
+  const email = req.body.email;
+
+  try {
+    // Create customer
+    const customer = await stripe.customers.create({
+      email: req.body.email,
+    });
+
+    // Create the subscription
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [
+        {
+          price: "price_1J62gNKE62sTLXpbDeIc50oj",
+        },
+      ],
+      payment_behavior: "default_incomplete",
+      expand: ["latest_invoice.payment_intent"],
+    });
+
+    res.send({
+      subscriptionId: subscription.id,
+      clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+    });
+  } catch (error) {
+    return next(error);
+  }
 };

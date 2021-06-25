@@ -8,6 +8,7 @@ const {
   forgotPassword,
   resetPassword,
   removeUser,
+  createSubscription,
 } = require("../controllers/user.js");
 
 router
@@ -21,5 +22,7 @@ router.route("/forgotPassword").post(forgotPassword);
 router.route("/resetPassword/:resetToken").post(resetPassword);
 
 router.route("/user/:userId").delete(verifyAndFindUser, removeUser);
+
+router.route("/create-subscription").post(createSubscription);
 
 module.exports = router;
