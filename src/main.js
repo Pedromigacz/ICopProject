@@ -3,11 +3,9 @@ const express = require("express"),
   mongoose = require("mongoose"),
   mongoData = require("./utils/databaseCredentials.js"),
   helmet = require("helmet"),
-  errorHandler = require("./middlewares/error.js");
-const {
-  jsonHeaderVerifier,
-  jsonBodyVerifierAndParser,
-} = require("./middlewares/checkReq.js");
+  errorHandler = require("./middlewares/error.js"),
+  cors = require("cors");
+const { jsonHeaderVerifier } = require("./middlewares/checkReq.js");
 
 // Connect to db
 mongoose.connect(
@@ -43,6 +41,9 @@ app.use(
     },
   })
 );
+
+// allow cors
+app.use(cors());
 
 // Helmet Middleware
 app.use(helmet());
