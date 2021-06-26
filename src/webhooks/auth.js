@@ -2,7 +2,10 @@ const express = require("express"),
   router = express.Router(),
   User = require("../models/User.js");
 
-const { verifyStrapiSignature } = require("../middlewares/stripe.js");
+const {
+  verifyStrapiSignaturePR,
+  verifyStrapiSignatureSB,
+} = require("../middlewares/stripe.js");
 const ErrorResponse = require("../utils/errorResponse.js");
 const { stripeSecretKey } = require("../utils/stripe.js");
 const stripe = require("stripe")(stripeSecretKey);
@@ -15,7 +18,7 @@ router
   .route("/preRegistration")
   .post(
     express.raw({ type: "*/*" }),
-    verifyStrapiSignature,
+    verifyStrapiSignaturePR,
     async (req, res, next) => {
       const event = req.body;
 
@@ -40,8 +43,9 @@ router
         );
 
         // create user
+        let user;
         try {
-          const user = await User.create({
+          user = await User.create({
             email: customer.email,
             password: priorPassword,
             stripeId: event.data.object.customer,
@@ -79,7 +83,7 @@ router
   .route("/subscription")
   .post(
     express.raw({ type: "*/*" }),
-    verifyStrapiSignature,
+    verifyStrapiSignatureSB,
     async (req, res, next) => {
       const event = req.body;
 
