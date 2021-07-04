@@ -9,21 +9,20 @@ const stripe = require("stripe")(stripeSecretKey);
 
 exports.completeRegistration = async (req, res, next) => {
   // req validation
-  if (!req.body.name) {
-    return next(ErrorResponse("missing name", 400));
+  if (!req.body.password) {
+    return next(new ErrorResponse("missing new password", 400));
   }
 
-  if (!req.body.password) {
-    return next(ErrorResponse("missing new password", 400));
+  let newAtt = { password: req.body.password };
+
+  if (req.body.name) {
+    newAtt.name = req.body.name;
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, {
-      name: req.body.name,
-      password: req.body.password,
-    });
+    const user = await User.findByIdAndUpdate(req.user._id, newAtt);
 
-    res.status(200).json({ success: true, data: "IHUUUU" });
+    res.status(200).json({ success: true, data: "use updated successfully" });
   } catch (error) {
     next(error);
   }
@@ -50,7 +49,17 @@ exports.login = async (req, res, next) => {
       return next(new ErrorResponse("Invalid credentials", 404));
     }
 
-    sendToken(user, 200, res);
+    // verify if user is admin
+    if (user.role !== "user") {
+      return sendToken(user, 200, res, "admin");
+    }
+
+    // verify if user is active
+    if (user.activated !== false) {
+      return sendToken(user, 200, res, "default");
+    }
+
+    return sendToken(user, 200, res);
   } catch (error) {
     next(error);
   }
@@ -155,15 +164,6 @@ exports.removeUser = async (req, res, next) => {
   });
 };
 
-const sendToken = (user, statusCode, res) => {
-  const token = user.getSignedToken();
-  res.status(statusCode).json({
-    success: true,
-    token,
-    activated: user.activated,
-  });
-};
-
 exports.createSubscription = async (req, res, next) => {
   if (!req.body.email) {
     return next(new ErrorResponse("Missing email parameter", 400));
@@ -196,4 +196,13 @@ exports.createSubscription = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+};
+
+const sendToken = (user, statusCode, res, status = "first login") => {
+  const token = user.getSignedToken();
+  res.status(statusCode).json({
+    success: true,
+    token,
+    status,
+  });
 };
