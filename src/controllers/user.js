@@ -112,6 +112,10 @@ exports.forgotPassword = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res, next) => {
+  if (!req.params.resetToken || !req.body.password) {
+    return next(new ErrorResponse("Missing params", 400));
+  }
+
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.resetToken)
@@ -124,7 +128,7 @@ exports.resetPassword = async (req, res, next) => {
     });
 
     if (!user) {
-      return next(new ErrorResponse("Invalid Reset Token", 400));
+      return next(new ErrorResponse("Invalid or Expired Reset Token", 400));
     }
 
     user.password = req.body.password;
