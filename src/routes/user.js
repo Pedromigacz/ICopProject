@@ -1,6 +1,9 @@
 const express = require("express"),
   router = express.Router(),
-  { verifyAndFindUser } = require("../middlewares/auth.js");
+  {
+    verifyAndFindUser,
+    verifyAdminPrivilige,
+  } = require("../middlewares/auth.js");
 
 const {
   completeRegistration,
@@ -9,6 +12,7 @@ const {
   resetPassword,
   removeUser,
   createSubscription,
+  findUsers,
 } = require("../controllers/user.js");
 
 router
@@ -21,8 +25,14 @@ router.route("/forgotPassword").post(forgotPassword);
 
 router.route("/resetPassword/:resetToken").post(resetPassword);
 
-router.route("/user/:userId").delete(verifyAndFindUser, removeUser);
+router
+  .route("/user/:userId")
+  .delete(verifyAndFindUser, verifyAdminPrivilige, removeUser);
 
 router.route("/create-subscription").post(createSubscription);
+
+router
+  .route("/findUser")
+  .post(verifyAndFindUser, verifyAdminPrivilige, findUsers);
 
 module.exports = router;

@@ -186,7 +186,7 @@ exports.createSubscription = async (req, res, next) => {
       customer: customer.id,
       items: [
         {
-          price: "price_1J62gNKE62sTLXpbDeIc50oj",
+          price: "price_1JAIFGJaJuHCA5Fm0nDxAnyV",
         },
       ],
       payment_behavior: "default_incomplete",
@@ -197,6 +197,22 @@ exports.createSubscription = async (req, res, next) => {
       subscriptionId: subscription.id,
       clientSecret: subscription.latest_invoice.payment_intent.client_secret,
     });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.findUsers = async (req, res, next) => {
+  if (!req.body.email) {
+    return next(new ErrorResponse("Missing email parameter", 400));
+  }
+
+  try {
+    const users = await User.find({
+      email: { $regex: new RegExp(req.body.email), $options: "i" },
+    });
+
+    res.status(200).json({ success: true, users: users });
   } catch (error) {
     return next(error);
   }
