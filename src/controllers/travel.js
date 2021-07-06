@@ -1,6 +1,7 @@
 const ErrorResponse = require("../utils/errorResponse.js");
 const Travel = require("../models/Travel.js");
 const mongoose = require("mongoose");
+const User = mongoose.model("User");
 
 exports.getTravel = async (req, res, next) => {
   let travel;
@@ -97,4 +98,20 @@ exports.deleteTravel = async (req, res, next) => {
     success: true,
     data: "travel deleted successfully",
   });
+};
+
+exports.getUserTravels = async (req, res, next) => {
+  if (!req.body.email) {
+    return next(new ErrorResponse("missing owner email travel", 400));
+  }
+
+  try {
+    const owner = await User.findOne({ email: req.body.email });
+
+    await owner.populate("listOfTravels").execPopulate();
+
+    res.status(200).json({ success: true, travels: [...owner.listOfTravels] });
+  } catch (error) {
+    return next(error);
+  }
 };

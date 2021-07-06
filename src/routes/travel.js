@@ -6,6 +6,7 @@ const {
   postTravel,
   putTravel,
   deleteTravel,
+  getUserTravels,
 } = require("../controllers/travel.js");
 
 const {
@@ -27,5 +28,7 @@ router
 router
   .route("/:travelId")
   .delete(verifyAndFindUser, verifyAdminPrivilige, deleteTravel);
+
+router.route("/getUserTravels").post(getUserTravels);
 
 module.exports = router;
