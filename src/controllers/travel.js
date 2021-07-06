@@ -108,6 +108,8 @@ exports.getUserTravels = async (req, res, next) => {
   try {
     const owner = await User.findOne({ email: req.body.email });
 
+    if (!owner) return next(new ErrorResponse("user not found", 404));
+
     await owner.populate("listOfTravels").execPopulate();
 
     res.status(200).json({ success: true, travels: [...owner.listOfTravels] });

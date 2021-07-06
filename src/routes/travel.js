@@ -29,6 +29,8 @@ router
   .route("/:travelId")
   .delete(verifyAndFindUser, verifyAdminPrivilige, deleteTravel);
 
+// verifyAndFindUser,
+// verifyAdminPrivilige,
 router.route("/getUserTravels").post(getUserTravels);
 
 module.exports = router;
