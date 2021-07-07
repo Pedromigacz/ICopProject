@@ -1,5 +1,7 @@
 const Service = require("../models/Service.js");
 const mongoose = require("mongoose");
+const Travel = mongoose.model("Travel");
+const ErrorResponse = require("../utils/errorResponse.js");
 
 exports.getPrivateService = async (req, res, next) => {
   let service;
@@ -95,4 +97,23 @@ exports.deleteService = async (req, res, next) => {
     success: true,
     data: "service deleted successfully",
   });
+};
+
+exports.findServices = async (req, res, next) => {
+  if (!req.body.travelName) {
+    return next(new ErrorResponse("missing travel name param", 400));
+  }
+
+  let owner;
+  try {
+    owner = await Travel.findOne({ name: req.body.travelName });
+
+    if (!owner) return next(new ErrorResponse("travel not found", 404));
+
+    await owner.populate("listOfServices").execPopulate();
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(200).json({ success: true, services: [...owner.listOfServices] });
 };

@@ -6,6 +6,7 @@ const {
   postService,
   putScervice,
   deleteService,
+  findServices,
 } = require("../controllers/services.js");
 
 const {
@@ -24,5 +25,9 @@ router
 router
   .route("/:serviceId")
   .delete(verifyAndFindUser, verifyAdminPrivilige, deleteService);
+
+router
+  .route("/getServices")
+  .post(verifyAndFindUser, verifyAdminPrivilige, findServices);
 
 module.exports = router;
