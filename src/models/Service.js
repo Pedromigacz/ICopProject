@@ -12,7 +12,7 @@ const ServiceSchema = new mongoose.Schema({
   address: String,
   description: String,
   comments: String,
-  listOfImages: [String],
+  listOfImages: [Object],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Travel",

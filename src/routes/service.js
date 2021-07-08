@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const parser = require("../utils/cloudinary.js");
 
 const {
   getPrivateService,
@@ -20,7 +21,12 @@ router.route("/").post(verifyAndFindUser, verifyAdminPrivilige, postService);
 
 router
   .route("/:serviceId")
-  .put(verifyAndFindUser, verifyAdminPrivilige, putScervice);
+  .put(
+    verifyAndFindUser,
+    verifyAdminPrivilige,
+    parser.array("images"),
+    putScervice
+  );
 
 router
   .route("/:serviceId")

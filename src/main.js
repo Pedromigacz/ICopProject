@@ -5,7 +5,6 @@ const express = require("express"),
   helmet = require("helmet"),
   errorHandler = require("./middlewares/error.js"),
   cors = require("cors");
-const { jsonHeaderVerifier } = require("./middlewares/checkReq.js");
 
 // Connect to db
 mongoose.connect(
@@ -23,10 +22,8 @@ const db = mongoose.connection;
 app.use("/api/webhooks", require("./webhooks/auth.js"));
 
 // Middlewares
-// JSON header virifier
-app.use(jsonHeaderVerifier);
 
-// Json req verifier and parser
+// parse json reqs
 app.use(
   express.json({
     verify: (req, res, buf, encoding) => {
@@ -41,6 +38,9 @@ app.use(
     },
   })
 );
+
+// parse urlencoded reqs
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // allow cors
 app.use(cors());
