@@ -17,7 +17,14 @@ const {
 
 router.route("/:serviceId").get(verifyAndFindUser, getPrivateService);
 
-router.route("/").post(verifyAndFindUser, verifyAdminPrivilige, postService);
+router
+  .route("/")
+  .post(
+    verifyAndFindUser,
+    verifyAdminPrivilige,
+    parser.array("images"),
+    postService
+  );
 
 router
   .route("/:serviceId")

@@ -19,26 +19,66 @@ exports.getPrivateService = async (req, res, next) => {
 };
 
 exports.postService = async (req, res, next) => {
-  if (!req.body || !req.body.service) {
-    return next(new ErrorResponse("missing service", 400));
+  if (!req.body) {
+    await deleteImages(req.files);
+    return next(new ErrorResponse("missing params", 400));
   }
 
-  const service = req.body.service;
+  if (!req.body.name) {
+    await deleteImages(req.files);
+    return next(new ErrorResponse("missing name parameter", 400));
+  }
+
+  if (!req.body.ownerName) {
+    await deleteImages(req.files);
+    return next(new ErrorResponse("missing owner parameter", 400));
+  }
+
+  let owner;
+
+  try {
+    owner = await Travel.findOne({ name: req.body.ownerName });
+
+    if (!owner) {
+      await deleteImages(req.files);
+      return next(new ErrorResponse("Travel name not found", 404));
+    }
+  } catch (error) {
+    await deleteImages(req.files);
+    return next(error);
+  }
+
+  let newService = {
+    name: req.body.name,
+    owner: mongoose.Types.ObjectId(owner._id),
+  };
+
+  if (req.body.price) newService.price = req.body.price;
+  if (req.body.brand) newService.brand = req.body.brand;
+  if (req.body.date) newService.date = req.body.date;
+  if (req.body.address) newService.address = req.body.address;
+  if (req.body.description) newService.description = req.body.description;
+  if (req.body.comments) newService.comments = req.body.comments;
+
+  newService.listOfImages = [];
+  if (req.files.length > 0) {
+    newService.listOfImages = req.files.map((file) => ({
+      path: file.path,
+      public_id: file.filename,
+    }));
+  }
 
   let savedService;
 
   try {
-    savedService = await Service.create({
-      name: service.name,
-      price: service.price,
-      brand: service.brand,
-      date: service.date,
-      address: service.address,
-      description: service.description,
-      comments: service.comments,
-      owner: mongoose.Types.ObjectId(service.ownerId),
-    });
+    savedService = await Service.create(newService);
+
+    if (!savedService) {
+      await deleteImages(req.files);
+      return next(new ErrorResponse("Internal server error", 500));
+    }
   } catch (error) {
+    await deleteImages(req.files);
     return next(error);
   }
 
@@ -130,4 +170,17 @@ exports.findServices = async (req, res, next) => {
   }
 
   res.status(200).json({ success: true, services: [...owner.listOfServices] });
+};
+
+const deleteImages = async (imagesArray) => {
+  // delete all images from imagesArray
+  if (imagesArray.length > 0) {
+    try {
+      for (const img of imagesArray) {
+        await cloudinary.uploader.destroy(img.filename);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };

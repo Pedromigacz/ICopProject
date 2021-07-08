@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const ErrorResponse = require("../utils/errorResponse.js");
+const cloudinary = require("cloudinary").v2;
 
 const ServiceSchema = new mongoose.Schema({
   name: {
@@ -38,6 +39,7 @@ ServiceSchema.pre("save", async function (next) {
 
 ServiceSchema.pre("remove", async function (next) {
   try {
+    // remove its ref from travelOwner
     const travelThatOwn = await mongoose
       .model("Travel")
       .findByIdAndUpdate(this.owner._id, {
@@ -51,6 +53,13 @@ ServiceSchema.pre("remove", async function (next) {
           500
         )
       );
+    }
+
+    // delete all images before delete this document
+    if (this.listOfImages.length > 0) {
+      for (const img of this.listOfImages) {
+        await cloudinary.uploader.destroy(img.public_id);
+      }
     }
   } catch (error) {
     return next(error);
