@@ -15,6 +15,10 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(message, 400);
   }
 
+  if (err.message.includes("Cast to ObjectId failed for value")) {
+    error = new ErrorResponse("This is not a valid objectId", 400);
+  }
+
   res.status(error.statusCode || 500).json({
     success: false,
     error: error.message || "Server Error",

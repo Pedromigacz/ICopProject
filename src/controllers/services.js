@@ -5,9 +5,17 @@ const ErrorResponse = require("../utils/errorResponse.js");
 const cloudinary = require("cloudinary").v2;
 
 exports.getPrivateService = async (req, res, next) => {
+  if (!req.params.serviceId) {
+    return next(new ErrorResponse("Missing serviceId query param"));
+  }
+
   let service;
   try {
     service = await Service.findById(req.params.serviceId);
+
+    if (!service) {
+      return next(new ErrorResponse("Service not found", 404));
+    }
   } catch (error) {
     return next(error);
   }
@@ -91,6 +99,7 @@ exports.postService = async (req, res, next) => {
 
 exports.putScervice = async (req, res, next) => {
   if (!req.params.serviceId) {
+    await deleteImages(req.files);
     return next(new ErrorResponse("missing params", 400));
   }
 
@@ -98,8 +107,13 @@ exports.putScervice = async (req, res, next) => {
   try {
     service = await Service.findById(req.params.serviceId);
 
+    if (!service) {
+      await deleteImages(req.files);
+      return next(new ErrorResponse("Service not found", 404));
+    }
+
     // delete all previous images
-    if (service.listOfImages.length > 0) {
+    if (service.listOfImages && service.listOfImages.length > 0) {
       for (const img of service.listOfImages) {
         await cloudinary.uploader.destroy(img.public_id);
       }
@@ -107,7 +121,7 @@ exports.putScervice = async (req, res, next) => {
 
     // add all new images to listOfImages attribute
     service.listOfImages = [];
-    if (req.files.length > 0) {
+    if (req.files && req.files.length > 0) {
       service.listOfImages = req.files.map((file) => {
         return { path: file.path, public_id: file.filename };
       });
@@ -123,6 +137,7 @@ exports.putScervice = async (req, res, next) => {
 
     service.save();
   } catch (error) {
+    await deleteImages(req.files);
     return next(error);
   }
 
@@ -165,6 +180,7 @@ exports.findServices = async (req, res, next) => {
     if (!owner) return next(new ErrorResponse("travel not found", 404));
 
     await owner.populate("listOfServices").execPopulate();
+    console.log(owner);
   } catch (error) {
     return next(error);
   }
