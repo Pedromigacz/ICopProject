@@ -180,7 +180,6 @@ exports.findServices = async (req, res, next) => {
     if (!owner) return next(new ErrorResponse("travel not found", 404));
 
     await owner.populate("listOfServices").execPopulate();
-    console.log(owner);
   } catch (error) {
     return next(error);
   }
