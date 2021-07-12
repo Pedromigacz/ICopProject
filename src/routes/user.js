@@ -3,6 +3,7 @@ const express = require("express"),
   {
     verifyAndFindUser,
     verifyAdminPrivilige,
+    verifySuperAdminPrivilige,
   } = require("../middlewares/auth.js");
 
 const {
@@ -13,6 +14,7 @@ const {
   removeUser,
   createSubscription,
   findUsers,
+  createUser,
 } = require("../controllers/user.js");
 
 router
@@ -34,5 +36,9 @@ router.route("/create-subscription").post(createSubscription);
 router
   .route("/findUser")
   .post(verifyAndFindUser, verifyAdminPrivilige, findUsers);
+
+router
+  .route("/createUser")
+  .post(verifyAndFindUser, verifySuperAdminPrivilige, createUser);
 
 module.exports = router;

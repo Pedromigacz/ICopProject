@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  paidUtil: {
+  paidUntil: {
     type: Date,
     required: [true, "Plese provide paidUntil date"],
   },

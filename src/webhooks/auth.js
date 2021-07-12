@@ -49,7 +49,7 @@ router
             email: customer.email,
             password: priorPassword,
             stripeId: event.data.object.customer,
-            paidUtil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has at least one extra day
+            paidUntil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has at least one extra day
           });
         } catch (error) {
           // In case the user is already created
@@ -97,7 +97,7 @@ router
             stripeId: event.data.object.customer,
           },
           {
-            paidUtil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has at least one extra day
+            paidUntil: Date.now() + 33 * 24 * 60 * 60 * 1000, // expiration date 33 days after the payment, so the user has at least one extra day
           }
         );
       } catch (error) {

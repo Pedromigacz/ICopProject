@@ -218,6 +218,57 @@ exports.findUsers = async (req, res, next) => {
   }
 };
 
+exports.createUser = async (req, res, next) => {
+  // create user endpoint from admins dashboard
+  if (!req.body.user) {
+    return next(new ErrorResponse("Missing user parameter"));
+  }
+  if (!req.body.user.email) {
+    return next(new ErrorResponse("Missing email parameter"));
+  }
+  if (!req.body.user.paidDays) {
+    return next(new ErrorResponse("Missing paidDays parameter"));
+  }
+
+  const user = req.body.user;
+
+  let savedUser;
+
+  const priorPassword = generatePassword();
+
+  try {
+    // Create customer
+    const customer = await stripe.customers.create({
+      email: req.body.user.email,
+    });
+
+    savedUser = await User.create({
+      email: user.email,
+      password: priorPassword,
+      name: user.name,
+      role: user.role,
+      stripeId: customer.id,
+      paidUntil: Date.now() + parseInt(user.paidDays) * 24 * 60 * 60 * 1000,
+    });
+
+    sendEmail({
+      to: user.email,
+      subject: "Get access to your account at COMPANY NAME",
+      text: `
+      <h1>Here are your credentials to access our site</h1>
+      <p>email: ${user.email} (your Stripe email)</p>
+      <p>password: <strong>${priorPassword}</strong></p>
+      <p>This password will grants access to your first login and should be changed</p>
+      <p>You can login at <a href=${frontEndUrl} clicktracking=off>our login page</a></p>
+      `,
+    });
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(200).json({ success: true, data: "user created successfully" });
+};
+
 const sendToken = (user, statusCode, res, status = "first login") => {
   const token = user.getSignedToken();
   res.status(statusCode).json({
@@ -226,3 +277,11 @@ const sendToken = (user, statusCode, res, status = "first login") => {
     status,
   });
 };
+
+const generatePassword = (
+  length = 8,
+  wishlist = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$"
+) =>
+  Array.from(crypto.randomFillSync(new Uint32Array(length)))
+    .map((x) => wishlist[x % wishlist.length])
+    .join("");

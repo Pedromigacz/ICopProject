@@ -70,5 +70,5 @@ exports.verifySuperAdminPrivilige = async (req, res, next) => {
   if (req.user.role === "superadmin") {
     return next();
   }
-  next(new ErrorResponse(403, "access denied"));
+  next(new ErrorResponse("access denied", 403));
 };
