@@ -15,6 +15,7 @@ const {
   createSubscription,
   findUsers,
   createUser,
+  getUser,
 } = require("../controllers/user.js");
 
 router
@@ -36,6 +37,8 @@ router.route("/create-subscription").post(createSubscription);
 router
   .route("/findUser")
   .post(verifyAndFindUser, verifyAdminPrivilige, findUsers);
+
+router.route("/:userId").get(verifyAndFindUser, verifyAdminPrivilige, getUser);
 
 router
   .route("/createUser")

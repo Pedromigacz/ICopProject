@@ -218,6 +218,20 @@ exports.findUsers = async (req, res, next) => {
   }
 };
 
+exports.getUser = async (req, res, next) => {
+  let user;
+  try {
+    user = await User.findById(req.params.userId);
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
 exports.createUser = async (req, res, next) => {
   // create user endpoint from admins dashboard
   if (!req.body.user) {
