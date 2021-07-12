@@ -218,6 +218,50 @@ exports.findUsers = async (req, res, next) => {
   }
 };
 
+exports.updateUser = async (req, res, next) => {
+  if (!req.body || !req.body.user) {
+    return next(new ErrorResponse("missing user", 400));
+  }
+  if (!req.params.userId) {
+    return next(new ErrorResponse("missing userId", 400));
+  }
+
+  const newUser = req.body.user;
+  try {
+    const user = await User.findById(req.params.userId);
+
+    if (!user) {
+      return next(new ErrorResponse("user not found", 400));
+    }
+
+    if (newUser.email) {
+      user.email = newUser.email;
+    }
+    if (newUser.password) {
+      user.password = newUser.password;
+    }
+    if (newUser.name) {
+      user.name = newUser.name;
+    }
+    if (newUser.role) {
+      user.role = newUser.role;
+    }
+    if (newUser.paidDays) {
+      user.paidUntil =
+        Date.now() + parseInt(newUser.paidDays) * 24 * 60 * 60 * 1000;
+    }
+
+    await user.save();
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: "user updated successfully",
+  });
+};
+
 exports.getUser = async (req, res, next) => {
   let user;
   try {
