@@ -27,12 +27,18 @@ exports.postTravel = async (req, res, next) => {
   let savedTravel;
 
   try {
+    const owner = await User.findOne({ email: travel.ownerEmail });
+
+    if (!owner) {
+      return next(new ErrorResponse("Owner not found", 404));
+    }
+
     savedTravel = await Travel.create({
       name: travel.name,
       location: travel.location,
       date: travel.date,
       comments: travel.comments,
-      owner: mongoose.Types.ObjectId(travel.ownerId),
+      owner: mongoose.Types.ObjectId(owner._id),
     });
   } catch (error) {
     return next(error);
