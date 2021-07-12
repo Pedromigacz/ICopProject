@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
   },
   paidUntil: {
     type: Date,
-    required: [true, "Plese provide paidUntil date"],
+    required: false,
   },
   listOfTravels: [
     {
