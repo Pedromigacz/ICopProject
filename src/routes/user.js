@@ -17,6 +17,7 @@ const {
   createUser,
   getUser,
   updateUser,
+  cancelSubscription,
 } = require("../controllers/user.js");
 
 router
@@ -34,6 +35,10 @@ router
   .delete(verifyAndFindUser, verifySuperAdminPrivilige, removeUser);
 
 router.route("/create-subscription").post(createSubscription);
+
+router
+  .route("/cancel-subscription")
+  .post(verifyAndFindUser, cancelSubscription);
 
 router
   .route("/findUser")

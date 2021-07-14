@@ -4,4 +4,5 @@ module.exports = {
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   stripeEndpointSecretPR: process.env.STRIPE_ENDPOINT_SECRET_PR,
   stripeEndpointSecretSB: process.env.STRIPE_ENDPOINT_SECRET_SB,
+  stripePriceId: process.env.STRIPE_PRICE_ID,
 };

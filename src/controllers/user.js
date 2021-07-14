@@ -4,7 +4,7 @@ const ErrorResponse = require("../utils/errorResponse.js");
 const { frontEndUrl } = require("../utils/dns.js");
 const sendEmail = require("../utils/sendEmail.js");
 
-const { stripeSecretKey } = require("../utils/stripe.js");
+const { stripeSecretKey, stripePriceId } = require("../utils/stripe.js");
 const stripe = require("stripe")(stripeSecretKey);
 
 exports.completeRegistration = async (req, res, next) => {
@@ -186,7 +186,7 @@ exports.createSubscription = async (req, res, next) => {
       customer: customer.id,
       items: [
         {
-          price: "price_1JAIFGJaJuHCA5Fm0nDxAnyV",
+          price: stripePriceId,
         },
       ],
       payment_behavior: "default_incomplete",
@@ -197,6 +197,20 @@ exports.createSubscription = async (req, res, next) => {
       subscriptionId: subscription.id,
       clientSecret: subscription.latest_invoice.payment_intent.client_secret,
     });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.cancelSubscription = async (req, res, next) => {
+  try {
+    stripe.subscriptions.update(req.user.stripeId, {
+      cancel_at_period_end: true,
+    });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Subscription cancelled successfully" });
   } catch (error) {
     return next(error);
   }
