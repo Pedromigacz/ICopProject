@@ -7,6 +7,7 @@ const {
   putTravel,
   deleteTravel,
   getUserTravels,
+  getOwnerTravels,
 } = require("../controllers/travel.js");
 
 const {
@@ -32,5 +33,7 @@ router
 router
   .route("/getUserTravels")
   .post(verifyAndFindUser, verifyAdminPrivilige, getUserTravels);
+
+router.route("/getOwnerTravels").post(verifyAndFindUser, getOwnerTravels);
 
 module.exports = router;

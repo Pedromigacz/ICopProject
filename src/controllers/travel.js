@@ -123,3 +123,21 @@ exports.getUserTravels = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getOwnerTravels = async (req, res, next) => {
+  if (!req.user._id) {
+    return next(new ErrorResponse("Something went wrong", 500));
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) return next(new ErrorResponse("user not found", 404));
+
+    await user.populate("listOfTravels").execPopulate();
+
+    res.status(200).json({ success: true, travels: [...user.listOfTravels] });
+  } catch (error) {
+    return next(error);
+  }
+};
