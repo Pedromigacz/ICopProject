@@ -16,6 +16,8 @@ exports.getPrivateService = async (req, res, next) => {
     if (!service) {
       return next(new ErrorResponse("Service not found", 404));
     }
+
+    await service.populate("owner").execPopulate();
   } catch (error) {
     return next(error);
   }

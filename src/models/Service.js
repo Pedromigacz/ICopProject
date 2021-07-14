@@ -28,8 +28,9 @@ ServiceSchema.pre("save", async function (next) {
     if (!travelOwner) {
       next(new ErrorResponse("Travel not found", 404));
     }
+
     if (
-      travelOwner.listOfServices.some((listedService) => {
+      !travelOwner.listOfServices.some((listedService) => {
         return listedService._id.equals(this._id);
       })
     ) {
