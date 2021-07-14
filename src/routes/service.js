@@ -8,6 +8,7 @@ const {
   putScervice,
   deleteService,
   findServices,
+  findServicesUser,
 } = require("../controllers/services.js");
 
 const {
@@ -42,5 +43,7 @@ router
 router
   .route("/getServices")
   .post(verifyAndFindUser, verifyAdminPrivilige, findServices);
+
+router.route("/getServicesUser").post(verifyAndFindUser, findServicesUser);
 
 module.exports = router;

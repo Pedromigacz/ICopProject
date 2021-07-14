@@ -187,6 +187,34 @@ exports.findServices = async (req, res, next) => {
   res.status(200).json({ success: true, services: [...owner.listOfServices] });
 };
 
+exports.findServicesUser = async (req, res, next) => {
+  if (!req.body.travelId) {
+    return next(new ErrorResponse("missing travel name param", 400));
+  }
+
+  let owner;
+
+  try {
+    owner = await Travel.findById(req.body.travelId);
+
+    if (!owner) return next(new ErrorResponse("travel not found", 404));
+
+    if (!owner.owner.equals(req.user._id)) {
+      return next(new ErrorResponso("Access denied", 400));
+    }
+  } catch (error) {
+    next(error);
+  }
+
+  try {
+    await owner.populate("listOfServices").execPopulate();
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(200).json({ success: true, travel: owner });
+};
+
 const deleteImages = async (imagesArray) => {
   // delete all images from imagesArray
   if (imagesArray.length > 0) {
