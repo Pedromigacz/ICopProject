@@ -20,6 +20,7 @@ const sendEmail = (options) => {
 
   transporter.sendMail(mailOptions, function (err, info) {
     if (err) {
+      console.log(err);
       return new ErrorResponse("Somthing went wrong in our server, sorry", 500);
     }
   });

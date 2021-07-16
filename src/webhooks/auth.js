@@ -59,7 +59,7 @@ router
         // send credentials by email
         sendEmail({
           to: user.email,
-          subject: "Get access to your account at COMPANY NAME",
+          subject: "Get access to your account at Tradojo",
           text: `
           <h1>Here are your credentials to access our site</h1>
           <p>email: ${user.email} (your Stripe email)</p>
