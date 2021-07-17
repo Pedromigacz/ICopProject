@@ -57,7 +57,7 @@ router
         }
 
         // send credentials by email
-        sendEmail({
+        await sendEmail({
           to: user.email,
           subject: "Get access to your account at Tradojo",
           text: `

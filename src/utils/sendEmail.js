@@ -2,8 +2,8 @@ if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const nodemailer = require("nodemailer");
 const ErrorResponse = require("./errorResponse.js");
 
-const sendEmail = (options) => {
-  const transporter = nodemailer.createTransport({
+const sendEmail = async (options) => {
+  const transporter = await nodemailer.createTransport({
     service: process.env.EMAIL_SERIVCE,
     auth: {
       user: process.env.EMAIL_USERNAME,
@@ -18,10 +18,13 @@ const sendEmail = (options) => {
     html: options.text,
   };
 
-  transporter.sendMail(mailOptions, function (err, info) {
+  await transporter.sendMail(mailOptions, function (err, info) {
     if (err) {
       console.log(err);
-      return new ErrorResponse("Somthing went wrong in our server, sorry", 500);
+      return new ErrorResponse(
+        "Something went wrong in our server, sorry",
+        500
+      );
     }
   });
 };

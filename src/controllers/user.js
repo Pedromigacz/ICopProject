@@ -176,6 +176,11 @@ exports.createSubscription = async (req, res, next) => {
   const email = req.body.email;
 
   try {
+    // Verify if this email is already registered
+    const user = await User.findOne({ email: email });
+    if (user) {
+      return next(new ErrorResponse("This user is already in use", 400));
+    }
     // Create customer
     const customer = await stripe.customers.create({
       email: req.body.email,
