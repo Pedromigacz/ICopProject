@@ -11,11 +11,14 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: async () => ({
-    folder: "Tradojo",
-    format: "png", // supports promises as well
-    public_id: Date.now(),
-  }),
+  params: async (req, file) => {
+    return {
+      folder: "Tradojo",
+      allowedFormats: ["png", "pdf", "jpg"], // supports promises as well
+      public_id: `${file.originalname}${Date.now()}`,
+      flags: "attachment",
+    };
+  },
 });
 
 module.exports = multer({ storage });
