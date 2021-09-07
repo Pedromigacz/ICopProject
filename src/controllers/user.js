@@ -346,6 +346,37 @@ exports.createUser = async (req, res, next) => {
   res.status(200).json({ success: true, data: "user created successfully" });
 };
 
+exports.userUpdateItself = async (req, res, next) => {
+  if (!req.body || !req.body.user) {
+    return next(new ErrorResponse("missing user", 400));
+  }
+
+  const newUser = req.body.user;
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return next(new ErrorResponse("user not found", 400));
+    }
+
+    if (newUser.email) {
+      user.email = newUser.email;
+    }
+    if (newUser.name) {
+      user.name = newUser.name;
+    }
+
+    await user.save();
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: "user updated successfully",
+  });
+};
+
 const sendToken = (user, statusCode, res, status = "first login") => {
   const token = user.getSignedToken();
   res.status(statusCode).json({

@@ -18,6 +18,7 @@ const {
   getUser,
   updateUser,
   cancelSubscription,
+  userUpdateItself,
 } = require("../controllers/user.js");
 
 router
@@ -47,11 +48,13 @@ router
 router.route("/:userId").get(verifyAndFindUser, verifyAdminPrivilige, getUser);
 
 router
-  .route("/:userId")
+  .route("/admin/:userId")
   .put(verifyAndFindUser, verifySuperAdminPrivilige, updateUser);
 
 router
   .route("/createUser")
   .post(verifyAndFindUser, verifySuperAdminPrivilige, createUser);
+
+router.route("/updateUser").put(verifyAndFindUser, userUpdateItself);
 
 module.exports = router;
