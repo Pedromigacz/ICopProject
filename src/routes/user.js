@@ -19,6 +19,7 @@ const {
   updateUser,
   cancelSubscription,
   userUpdateItself,
+  updateSubscription,
 } = require("../controllers/user.js");
 
 router
@@ -56,5 +57,7 @@ router
   .post(verifyAndFindUser, verifySuperAdminPrivilige, createUser);
 
 router.route("/updateUser").put(verifyAndFindUser, userUpdateItself);
+
+router.route("/updateSubscription").put(verifyAndFindUser, updateSubscription);
 
 module.exports = router;

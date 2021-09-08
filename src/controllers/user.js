@@ -207,6 +207,34 @@ exports.createSubscription = async (req, res, next) => {
   }
 };
 
+exports.updateSubscription = async (req, res, next) => {
+  if (!req.user.stripeId) {
+    return next(new ErrorResponse("Internal server error", 500));
+  }
+  if (!req.body.paymentMethod) {
+    return next(new ErrorResponse("paymentMethod not found", 404));
+  }
+
+  try {
+    const paymentMethod = await stripe.paymentMethods.attach(
+      req.body.paymentMethod.id,
+      { customer: req.user.stripeId }
+    );
+
+    const customer = await stripe.customers.update(req.user.stripeId, {
+      invoice_settings: { default_payment_method: paymentMethod.id },
+    });
+  } catch (err) {
+    next(err);
+  }
+
+  console.log(customer);
+
+  res
+    .status(200)
+    .json({ success: true, message: "PaymentMethod updated successfully" });
+};
+
 exports.cancelSubscription = async (req, res, next) => {
   try {
     stripe.subscriptions.update(req.user.stripeId, {
