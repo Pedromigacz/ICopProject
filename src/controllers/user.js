@@ -235,7 +235,19 @@ exports.updateSubscription = async (req, res, next) => {
 
 exports.cancelSubscription = async (req, res, next) => {
   try {
-    stripe.subscriptions.update(req.user.stripeId, {
+    const subscriptions = await stripe.subscriptions.list({
+      customer: req.user.stripeId,
+    });
+
+    if (!subscriptions.data[0]) {
+      return next(new ErrorResponse("Internal server error", 500));
+    }
+
+    if (!subscriptions.data[0].status === "active") {
+      return next(new ErrorResponse("Subscription already cancelled", 400));
+    }
+
+    stripe.subscriptions.update(subscriptions.data[0].id, {
       cancel_at_period_end: true,
     });
 
