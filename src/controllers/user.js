@@ -228,8 +228,6 @@ exports.updateSubscription = async (req, res, next) => {
     next(err);
   }
 
-  console.log(customer);
-
   res
     .status(200)
     .json({ success: true, message: "PaymentMethod updated successfully" });
