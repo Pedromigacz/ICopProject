@@ -46,6 +46,23 @@ const UserSchema = new mongoose.Schema({
   name: String,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  discord: {
+    access_token: {
+      type: String,
+    },
+    expires_in: {
+      type: Number,
+    },
+    refresh_token: {
+      type: String,
+    },
+    scope: {
+      type: String,
+    },
+    token_type: {
+      type: String,
+    },
+  },
 });
 
 // USER PRE HOOKS
