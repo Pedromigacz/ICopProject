@@ -20,6 +20,7 @@ const {
   cancelSubscription,
   userUpdateItself,
   updateSubscription,
+  addDiscordAccount,
 } = require("../controllers/user.js");
 
 router
