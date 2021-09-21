@@ -8,6 +8,6 @@ const { addDiscordAccount } = require("../controllers/discord.js");
 //   .route("/completeRegistration")
 //   .post(verifyAndFindUser, completeRegistration);
 
-router.route("/addDiscordAccount").get(addDiscordAccount);
+router.route("/addDiscordAccount").post(verifyAndFindUser, addDiscordAccount);
 
 module.exports = router;
