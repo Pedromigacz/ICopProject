@@ -319,6 +319,17 @@ exports.updateUser = async (req, res, next) => {
   });
 };
 
+exports.userGetProfile = async (req, res, next) => {
+  if (!req.user) {
+    return next(new ErrorResponse("User not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: req.user,
+  });
+};
+
 exports.getUser = async (req, res, next) => {
   let user;
   try {

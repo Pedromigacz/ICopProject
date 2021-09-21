@@ -21,6 +21,7 @@ const {
   userUpdateItself,
   updateSubscription,
   addDiscordAccount,
+  userGetProfile,
 } = require("../controllers/user.js");
 
 router
@@ -46,6 +47,8 @@ router
 router
   .route("/findUser")
   .post(verifyAndFindUser, verifyAdminPrivilige, findUsers);
+
+router.route("/profile").get(verifyAndFindUser, userGetProfile);
 
 router.route("/:userId").get(verifyAndFindUser, verifyAdminPrivilige, getUser);
 
