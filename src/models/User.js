@@ -62,6 +62,12 @@ const UserSchema = new mongoose.Schema({
     token_type: {
       type: String,
     },
+    id: {
+      type: String,
+    },
+    username: {
+      type: String,
+    },
   },
 });
 
