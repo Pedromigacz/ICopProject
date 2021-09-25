@@ -53,10 +53,14 @@ exports.addDiscordAccount = async (req, res, next) => {
     const user = await User.findById(req.user._id);
 
     if (!(user.discord.id === data.id)) {
-      const guild = await client.guilds.cache.get(envs.serverId);
-      const user = await guild.members.fetch(data.id);
-      await user.kick();
-      // console.log(user.kick());
+      try {
+        const guild = await client.guilds.cache.get(envs.serverId);
+        const oldUser = await guild.members.fetch(user.discord.id);
+        const res = await oldUser.kick("A new account was bound");
+        // console.log(user.kick());
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     user.discord = { ...data };
@@ -94,6 +98,8 @@ exports.filterDiscord = async (req, res, next) => {
   });
 
   //console.log(userList);
+
+  // userList.map()
 
   // const user = await client.users.fetch("293437376154566666");
   // const guild = await client.guilds.cache.get("768155259821883393");
