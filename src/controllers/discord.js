@@ -72,7 +72,7 @@ exports.addDiscordAccount = async (req, res, next) => {
         guildId: envs.guild_id,
         userId: user.discord.id,
         roles: [...envs.roles_list.split(",")],
-        nickname: user.email,
+        // nickname: user.email,
       });
     } catch (err) {
       // fallback, send a mesage with an invitation
