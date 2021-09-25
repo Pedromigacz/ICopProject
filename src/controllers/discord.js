@@ -86,3 +86,23 @@ exports.addDiscordAccount = async (req, res, next) => {
     data: "Discord account bound successfully",
   });
 };
+
+exports.filterDiscord = async (req, res, next) => {
+  const userList = await User.find({
+    role: "user",
+    paidUntil: { $lt: new Date() },
+  });
+
+  //console.log(userList);
+
+  // const user = await client.users.fetch("293437376154566666");
+  // const guild = await client.guilds.cache.get("768155259821883393");
+  // const user = await guild.members.fetch("292827895783620608");
+  // user.roles.remove("890719813612220417");
+  // console.log(user.roles);
+
+  res.status(200).json({
+    success: true,
+    data: "Discord server filtered successfully",
+  });
+};
