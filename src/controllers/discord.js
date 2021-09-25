@@ -8,6 +8,18 @@ const Querystring = require("querystring");
 const DiscordOauth2 = require("discord-oauth2");
 const oauth = new DiscordOauth2();
 
+// Discord bot socket connection
+const { Client, Intents } = require("discord.js");
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
+client.login(envs.botToken);
+
+client.on("ready", () => {
+  console.log("Bot connected successfully");
+});
+
 exports.addDiscordAccount = async (req, res, next) => {
   if (!req.body.code) {
     return next(new ErrorResponse("Missing code parameter", 400));
@@ -39,6 +51,13 @@ exports.addDiscordAccount = async (req, res, next) => {
     data.username = discordUser.username;
 
     const user = await User.findById(req.user._id);
+
+    if (!(user.discord.id === data.id)) {
+      const guild = await client.guilds.cache.get(envs.serverId);
+      const user = await guild.members.fetch(data.id);
+      await user.kick();
+      // console.log(user.kick());
+    }
 
     user.discord = { ...data };
 
