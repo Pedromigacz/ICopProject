@@ -6,6 +6,9 @@ const express = require("express"),
   errorHandler = require("./middlewares/error.js"),
   cors = require("cors");
 
+// requirese cron jobs
+const { discordCronJobs } = require("./cron-jobs/discord.js");
+
 // Connect to db
 mongoose.connect(
   `mongodb+srv://${mongoData.name}:${mongoData.password}${mongoData.path}`,
@@ -47,6 +50,9 @@ app.use(cors());
 
 // Helmet Middleware
 app.use(helmet());
+
+// Config discord cron-jobs
+discordCronJobs();
 
 // Routes
 app.use("/api/auth", require("./routes/user.js"));
