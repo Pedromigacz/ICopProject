@@ -1,6 +1,9 @@
 const express = require("express"),
   router = express.Router(),
-  { verifyAndFindUser } = require("../middlewares/auth.js");
+  {
+    verifyAndFindUser,
+    verifySuperAdminPrivilige,
+  } = require("../middlewares/auth.js");
 
 const {
   addDiscordAccount,
