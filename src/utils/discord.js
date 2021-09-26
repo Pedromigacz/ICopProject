@@ -12,4 +12,7 @@ module.exports = {
     process.env.DISCORD_BOT_TOKEN ||
     "ODg2Mzk5NzExMjE1NDkzMTUw.YT1CDw.LK9KuMdqOitoDw57ryo3MpQoxQg",
   serverId: process.env.DISCORD_SERVER_ID || "768155259821883393",
+  customerRoleId: process.env.DISCORD_CUSTOMER_ROLE_ID || "887155810130608159",
+  suspendedCustomerRoleId:
+    process.env.DISCORD_SUSPENDED_CUSTOMER_ROLE_ID || "890719813612220417",
 };

@@ -99,11 +99,22 @@ exports.filterDiscord = async (req, res, next) => {
 
   //console.log(userList);
 
+  await Promise.all(
+    userList.map(async (user) => {
+      if (user.discord && user.discord.id) {
+        console.log(user.discord.id);
+        const guild = await client.guilds.cache.get(envs.serverId);
+        const discordUser = await guild.members.fetch(user.discord.id);
+        console.log(discordUser);
+        await discordUser.roles.remove(envs.customerRoleId);
+        await discordUser.roles.add(envs.suspendedCustomerRoleId);
+      }
+    })
+  );
+
   // userList.map()
 
   // const user = await client.users.fetch("293437376154566666");
-  // const guild = await client.guilds.cache.get("768155259821883393");
-  // const user = await guild.members.fetch("292827895783620608");
   // user.roles.remove("890719813612220417");
   // console.log(user.roles);
 

@@ -13,6 +13,8 @@ const {
 
 router.route("/addDiscordAccount").post(verifyAndFindUser, addDiscordAccount);
 
-router.route("/refreshServer").get(filterDiscord);
+router
+  .route("/refreshServer")
+  .get(verifyAndFindUser, verifySuperAdminPrivilige, filterDiscord);
 
 module.exports = router;
