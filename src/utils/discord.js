@@ -15,4 +15,5 @@ module.exports = {
   customerRoleId: process.env.DISCORD_CUSTOMER_ROLE_ID || "887155810130608159",
   suspendedCustomerRoleId:
     process.env.DISCORD_SUSPENDED_CUSTOMER_ROLE_ID || "890719813612220417",
+  cronSchedule: process.env.DISCORD_CRON_SCHEDULE || "0 3 * * *",
 };
