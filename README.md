@@ -14,5 +14,5 @@
   <li><b>nodemailer</b> and <b>send grid</b> handle emails</li>
 </ul>
 <h2>License</h2>
-<p>Use this code as you wish, but it would be nice if you ref me or this repo somewhere 🤠</p>
+<p>All this code was produced by me 🤠. You have permission to use it as you wish, but it would be nice if you ref me or this repo somewhere.</p>
 <h3>OBS: All the tokens and sensitive data on this app were from a test account and all of them are already revoked.</h3>
