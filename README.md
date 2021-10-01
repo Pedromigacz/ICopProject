@@ -15,4 +15,6 @@
 </ul>
 <h2>License</h2>
 <p>All this code was produced by me 🤠. You have permission to use it as you wish, but it would be nice if you ref me or this repo somewhere.</p>
-<h3>OBS: All the tokens and sensitive data on this app were from a test account and all of them are already revoked.</h3>
+<h2>Status</h2>
+<p>I'm currently trying to refactor this code from its monolithic architecture to a microservices architecture (if you have any suggestions, please, feel free to reach out)</p>
+<h3>OBS: All the tokens and sensitive data on this repo were from test accounts and all of them are already revoked.</h3>
